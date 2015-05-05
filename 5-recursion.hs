@@ -21,7 +21,10 @@ fib x = (a1 + a2) : a1 : a2 : as
 --			    stepReverseSign -3 1 = 4
 --			    stepReverseSign 1 2 = -3
 stepReverseSign :: (Fractional a, Ord a) => a -> a -> a
-stepReverseSign a = (+) (abs a)
+stepReverseSign num step = let newNum = abs num + step
+                           in if num > 0
+                           then - newNum
+                           else newNum
 
 {- Lets calculate pi.
  - The Leibniz formula for pi (http://en.wikipedia.org/wiki/Leibniz_formula_for_%CF%80)
@@ -55,8 +58,12 @@ stepReverseSign a = (+) (abs a)
  -}
 
 piCalc :: (Fractional a, Integral b, Ord a) => a -> (a, b)
-piCalc a = undefined
+piCalc a = piCalc' 1 0.0 a 0
 
 piCalc' :: (Ord a, Fractional a, Integral b) => a -> a -> a -> b -> (a, b)
-piCalc' w x y z = undefined
+piCalc' w x y z 
+    | abs c > y = piCalc' d (x + c) y (z+1)  
+    | otherwise = (x, z)
+    where c = 4 / w
+          d = stepReverseSign w 2
 

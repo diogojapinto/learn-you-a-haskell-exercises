@@ -28,11 +28,32 @@
  - 5 is equal to 5
  -}
 
+import Data.Monoid
+import Control.Monad.Trans.Writer
+
 describe :: (Show a, Eq a, Ord a) => a -> a -> [String]
-describe x y = undefined
+describe x y
+    | x < y     = [show x ++ " is less than " ++ show y]
+    | x == y    = [show x ++ " is equal to " ++ show y]
+    | x > y     = [show x ++ " is greater than " ++ show y]
 
 binarySearch :: (Show a, Ord a, Eq a, Monoid b) => (a -> a -> b) -> a -> [a] -> Writer b Bool
-binarySearch = undefined
+binarySearch f val [] = return False
+binarySearch f val lst
+    | val == halfV = do
+        tell $ f val halfV
+        return True
+    | val < halfV = do
+        tell $ f val halfV
+        binarySearch f val leftLst
+    | val > halfV = do
+        tell $ f val halfV
+        binarySearch f val rightLst
+    where len = length lst
+          halfI = len `div` 2
+          halfV = lst !! halfI
+          leftLst = take halfI lst
+          rightLst = drop halfI lst
 
 {-
  - Investigate what other functions instead of describe can be passed to the binary search.
